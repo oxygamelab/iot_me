@@ -1,23 +1,26 @@
 <template>
-  <HiBoss />
+  <MyDash />
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import HiBoss from "./components/HiBoss.vue";
+//import HiBoss from "./components/HiBoss.vue";
+import MyDash from "./components/MyDash.vue";
 
 export default {
   name: "App",
   components: {
-    HiBoss,
+    MyDash,
   },
 };
 </script>
 
 <style>
+html,
 body {
   padding: 0;
   margin: 0;
+  height: 100%;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
