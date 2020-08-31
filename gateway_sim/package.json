@@ -1,0 +1,15 @@
+{
+  "name": "gateway_sim",
+  "version": "1.0.0",
+  "description": "gateway simulator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "volky",
+  "license": "ISC",
+  "dependencies": {
+    "mqtt": "^4.2.1",
+    "nodemon": "^2.0.4"
+  }
+}

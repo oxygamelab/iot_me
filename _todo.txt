@@ -1,0 +1,21 @@
+http://test.mosquitto.org
+
+1883 : MQTT, unencrypted
+8883 : MQTT, encrypted
+8884 : MQTT, encrypted, client certificate required
+8080 : MQTT over WebSockets, unencrypted
+8081 : MQTT over WebSockets, encrypted
+
+//--
+
+https://www.npmjs.com/package/mqtt#example
+npm install mqtt --save
+
+https://www.npmjs.com/package/vue-mqtt
+npm install vue-mqtt --save
+
+//--
+
+- mqtt server | test.mosquitto.org
+- gateway_sim | mqtt client | nodejs
+- iot_app | mqtt client | vuejs
