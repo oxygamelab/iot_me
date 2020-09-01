@@ -11,11 +11,12 @@
       />
       Listeners
     </a>
+    <span class="text-muted">broker.hivemq.com:8000</span>
   </nav>
 </template>
 
 <script>
-export default {};
+export default {}
 </script>
 
 <style></style>

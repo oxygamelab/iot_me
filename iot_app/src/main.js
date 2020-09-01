@@ -23,6 +23,23 @@ Vue.component('fa-icons', FontAwesomeIcon)
 
 Vue.filter('toSafe', (val) => val.replace(/[^a-z0-9]/gi, '_').toLowerCase())
 
+import autocomplete from './components/autocomplete'
+Vue.component('autocomplete', autocomplete)
+
+import { groups, topics } from './globals'
+
+//Vue.prototype.$groups = groups
+//Vue.prototype.$topics = topics
+
+Vue.mixin({
+  data: function() {
+    return {
+      groups: groups,
+      topics: topics,
+    }
+  },
+})
+
 new Vue({
   render: (h) => h(App),
 }).$mount('#app')

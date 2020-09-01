@@ -3,48 +3,48 @@ export const settings = {
   some: 'Settings',
 }
 export const groups = [
-  { id: 1, uniq: 'mysensor-1', name: 'MySensor' },
-  { id: 2, uniq: 'pump-2', name: 'Pump' },
+  { slug: 'mysensor', name: 'MySensor' },
+  //{ slug: 'pump', name: 'Pump' },
 ]
 
 export const topics = [
   {
-    id: 1,
     uniq: 'mysensor-humidity-1-1',
     name: 'Humidity',
+    slug: 'humidity',
     desc: 'Set humidity value (float)',
     opt: [
       { slug: 'min', name: 'Min. value', value: 0.01 },
       { slug: 'max', name: 'Max. value', value: 70.0 },
-      { slug: 'ratio', name: 'Ratio', value: 1.0 },
+      { slug: 'ratio', name: 'Ratio', value: 80 },
     ],
-    status: 1,
-    group_id: 1,
+    status: 0,
+    groupSlug: 'mysensor',
   },
-  {
-    id: 2,
+  /* {
     uniq: 'mysensor-temperature-1-2',
     name: 'Temperature',
+    slug: 'temperature',
     desc: 'Set temperature value (float)',
     opt: [
       { slug: 'min', name: 'Min. value', value: 0.01 },
       { slug: 'max', name: 'Max. value', value: 70.0 },
-      { slug: 'ratio', name: 'Ratio', value: 1.0 },
+      { slug: 'ratio', name: 'Ratio', value: 50 },
     ],
     status: 0,
-    group_id: 1,
+    groupSlug: 'mysensor',
   },
   {
-    id: 3,
     uniq: 'pump-vibration-2-1',
     name: 'Vibration',
+    slug: 'vibration',
     desc: 'Set vibration value (float)',
     opt: [
       { slug: 'min', name: 'Min. value', value: 0.01 },
       { slug: 'max', name: 'Max. value', value: 70.0 },
-      { slug: 'ratio', name: 'Ratio', value: 1.0 },
+      { slug: 'ratio', name: 'Ratio', value: 70 },
     ],
     status: 1,
-    group_id: 2,
-  },
+    groupSlug: 'pump',
+  }, */
 ]

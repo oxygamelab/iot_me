@@ -11,20 +11,20 @@
         :class="'card-body collapse ' + (k > 0 ? '' : 'show')"
         data-parent=".topic-gouup"
       >
-        <div class="card mt-3" v-for="topic in groupTopics(groups[k].id)" :key="topic.id">
+        <div class="card mt-3" v-for="topic in groupTopics(groups[k].slug)" :key="topic.uniq">
           <div class="card-body">
             <h5 class="card-title">{{ topic.name }}</h5>
             <p v-show="topic.desc" class="card-text">{{ topic.desc }}</p>
             <hr />
-            <p v-html="topicOpt(topic.id)"></p>
+            <p v-html="topicOpt(topic.uniq)"></p>
             <hr />
             <div class="d-flex justify-content-between">
               <a
-                @click="toggleStatus(topic.id)"
+                @click="toggleStatus(topic.uniq)"
                 :class="'btn btn-sm flex-fill mr-2 btn-' + types[topic.status].style"
                 ><fa-icons :icon="types[topic.status].icon" /> {{ types[topic.status].text }}</a
               >
-              <a @click="removeTopic(topic.id)" :class="`btn btn-sm px-3 btn-${types[2].style}`"
+              <a @click="removeTopic(topic.uniq)" :class="`btn btn-sm px-3 btn-${types[2].style}`"
                 ><fa-icons :icon="types[2].icon" /> {{ types[2].text }}</a
               >
             </div>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { groups, topics } from '../globals'
+//import { groups, topics } from '../globals'
 
 export default {
   data() {
@@ -47,27 +47,46 @@ export default {
         { icon: 'play', text: 'Working..', style: 'success' },
         { icon: 'trash-alt', text: 'Remove', style: 'danger' },
       ],
-      groups: groups,
-      topics: topics,
+      //groups: null,
+      //topics: null,
     }
   },
   methods: {
-    groupTopics: function(_groupid) {
-      return this.topics.filter((topic) => topic.group_id == _groupid)
+    groupTopics: function(_groupSlug) {
+      return this.topics.filter((topic) => topic.groupSlug == _groupSlug)
     },
-    topicOpt: function(_topicId) {
-      let topic_data = this.topics.find((topic) => topic.id == _topicId)
+    topicOpt: function(_topicUniq) {
+      let topic_data = this.topics.find((topic) => topic.uniq == _topicUniq)
       return topic_data.opt.map((obj) => obj.name + ': ' + obj.value.toFixed(2)).join('<br>')
     },
-    toggleStatus: function(_topicId) {
-      let topic = this.topics.find((topic) => topic.id == _topicId)
+    toggleStatus: function(_topicUniq) {
+      let topic = this.topics.find((topic) => topic.uniq == _topicUniq)
       topic.status = Number(!topic.status)
     },
-    removeTopic: function(_topicId) {
-      this.topics = this.topics.filter((topic) => topic.id !== _topicId)
+    removeTopic: function(_topicUniq) {
+      let topic = this.topics.find((_topic) => _topic.uniq == _topicUniq)
+      //this.topics = this.topics.filter((_topic) => _topic.uniq !== _topicUniq)
+      this.topics.splice(
+        this.topics.findIndex((e) => e.uniq === _topicUniq),
+        1
+      )
+
+      this.unsubTopic(topic, (err, topic) => {
+        if (!err) {
+          //console.log(granted);
+          console.log(`Unubscribe | topic: ${topic}`)
+        } else {
+          console.log(`Err: ${err}`)
+        }
+      })
+    },
+    unsubTopic: function(_topic, _call) {
+      let topic = `${_topic.groupSlug}/${_topic.slug}`
+      this.$mqtt.unsubscribe(topic, (err) => {
+        _call(err, topic)
+      })
     },
   },
-  computed: {},
 }
 </script>
 

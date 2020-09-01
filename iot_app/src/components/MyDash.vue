@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import navbar from "./navbar";
-import listeners from "./listeners";
-import addtags from "./addtags";
-import edittags from "./edittags";
+import navbar from './navbar'
+import listeners from './listeners'
+import addtags from './addtags'
+import edittags from './edittags'
 
 export default {
   components: {
@@ -24,5 +24,5 @@ export default {
     addtags,
     edittags,
   },
-};
+}
 </script>

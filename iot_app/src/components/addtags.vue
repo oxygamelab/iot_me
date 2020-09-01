@@ -3,11 +3,12 @@
   <div class="col-4">
     <form ref="topicFrm" @submit.prevent="getForm">
       <div class="form-group">
-        <label for="exampleInputEmail1">Topic Group</label>
-        <input type="text" class="form-control" v-model="topicGroup" placeholder="e.g. MySensors" required />
+        <label>Topic Group</label>
+        <autocomplete :items="groupName()" v-model="topicGroup" :placeholder="'e.g. MySensor'">
+        </autocomplete>
       </div>
       <div class="form-group">
-        <label for="exampleInputEmail1">Topic Name</label>
+        <label>Topic Name</label>
         <input type="text" class="form-control" v-model="topicName" placeholder="e.g. Humidity" required />
       </div>
       <div class="form-group">
@@ -46,12 +47,15 @@
 </template>
 
 <script>
-import { topics } from '../globals'
+//import { groups, topics } from '../globals'
+import { lowercase, spinalcase } from 'stringcase'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   data() {
     return {
-      topics: topics,
+      //groups: groups,
+      //topics: topics,
       topicGroup: null,
       topicName: null,
       topicDesc: null,
@@ -62,6 +66,12 @@ export default {
     }
   },
   methods: {
+    toSafe: function(text) {
+      return spinalcase(lowercase(text))
+    },
+    groupName: function() {
+      return this.groups.map((group) => group.name)
+    },
     getForm: function() {
       this.addTopic(
         this.topicGroup,
@@ -73,10 +83,25 @@ export default {
         this.topicPush
       )
     },
-    addTopic: function(_group, _topic, _desc, _min, _max, _ratio, _status) {
-      this.topics.push({
-        id: 4,
-        uniq: `${_group}-${_topic}-1-1`,
+    addTopic: function(...args) {
+      const [_group, _topic, _desc, _min, _max, _ratio, _status] = args
+
+      /** create group get slug */
+      //--
+      let _groupObj = this.groups.find((group) => group.slug == this.toSafe(_group))
+      let _groupSlug = this.toSafe(_group)
+      if (!_groupObj) {
+        this.groups.push({ slug: _groupSlug, name: _group })
+      }
+
+      /** create topic get uniq */
+      //--
+      let _topicUniq = uuidv4()
+
+      const newTopic = {
+        //id: _topicId,
+        uniq: _topicUniq,
+        slug: this.toSafe(_topic),
         name: _topic,
         desc: _desc,
         opt: [
@@ -85,9 +110,54 @@ export default {
           { slug: 'ratio', name: 'Ratio', value: parseFloat(_ratio) },
         ],
         status: Number(_status),
-        group_id: 2,
+        groupSlug: _groupSlug,
+      }
+
+      console.log(newTopic)
+      this.topics.push(newTopic)
+
+      //** subscribe topic */
+      //--
+      this.subTopic(newTopic, (err, topic) => {
+        if (!err) {
+          //console.log(granted);
+          console.log(`Subscribe | topic: ${topic}`)
+          //console.log(`Unsubscribe | topic: ${_topic}`)
+        } else {
+          console.log(`Err: ${err}`)
+        }
       })
+
+      //** publish */
+      //--
+
+      this.clearForm()
+    },
+    clearForm: function() {
+      this.topicGroup = null
+      this.topicName = null
+      this.topicDesc = null
+      this.topicMin = null
+      this.topicMax = null
+      this.topicRatio = null
+      this.topicPush = null
       this.$refs.topicFrm.reset()
+    },
+    subTopic: function(_topic, _call) {
+      let topic = `${_topic.groupSlug}/${_topic.slug}`
+      this.$mqtt.subscribe(topic, {}, (err) => {
+        _call(err, topic)
+      })
+    },
+    unsubTopic: function(_topic, _call) {
+      let topic = `${_topic.groupSlug}/${_topic.slug}`
+      this.$mqtt.unsubscribe(topic, (err) => {
+        _call(err, topic)
+      })
+    },
+    pubTopic: function(_topic, _value) {
+      let topic = `${_topic.groupSlug}/${_topic.slug}`
+      this.$mqtt.publish(topic, _value)
     },
   },
 }
