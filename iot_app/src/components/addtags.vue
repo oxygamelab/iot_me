@@ -30,7 +30,7 @@
           <input type="text" class="form-control" v-model="topicMax" placeholder="e.g. 70.0" />
         </div>
         <div class="col-md-4 mb-3">
-          <label>Ratio (%)</label>
+          <label>Ratio</label>
           <input type="text" class="form-control" v-model="topicRatio" placeholder="e.g. 1.0" />
         </div>
       </div>
