@@ -23,9 +23,9 @@
             </div>
             <div class="form-group">
               <label>Theme</label>
-              <select class="form-control">
-                <option value="1" selected>Default</option>
-                <option value="2" disabled>Dark</option>
+              <select class="form-control" v-model="this.$dark">
+                <option value="0" selected>Default</option>
+                <option value="1" disabled>Dark</option>
               </select>
             </div>
           </form>
@@ -163,12 +163,16 @@ export default {
   methods: {
     saveServer: function() {
       switch (this.selServer) {
-        case 0: //create
+        case 0: {
+          //create
           break
-        case '1': //add
+        }
+        case '1': {
+        //add
+        
           let _uniq = this.$options.filters.toSafe(this.serverHost + '-' + this.serverPort)
           console.log(_uniq)
-          /* this.$servers.push({
+          this.$servers.push({
             uniq: _uniq,
             host: this.serverHost,
             port: this.serverPort,
@@ -186,12 +190,18 @@ export default {
               }
             })
           }
-          this.selServer = _uniq */
+          this.selServer = _uniq
           break
-        default:
+          }
+        default: {
           //select
-          if (this.serverSel) {
             let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
+            _server.host= this.serverHost
+            _server.port= this.serverPort
+            _server.path= this.serverPath
+            _server.user= this.serverUser
+            _server.pass= this.serverPass
+          if (this.serverSel) {
             if (!_server.selected) {
               this.$servers.map((ss) => {
                 ss.selected = 0
@@ -199,6 +209,7 @@ export default {
               _server.selected = 1
               this.serverSelected = true
             }
+          }
           }
       }
       //if (this.serverSel) {}

@@ -11,9 +11,11 @@ Vue.use(VueMqtt, 'ws://broker.hivemq.com:8000', {
   port: 8000,
   path: '/mqtt',
 })
-
+let aa = false
+console.log(this.$dark)
 import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import('bootstrap/dist/css/bootstrap.min.css')
+if(aa) { import('./assets/bootstrap.min.css') }
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -51,6 +53,14 @@ Vue.mixin({
     }
   },
   computed: {
+    $dark: {
+      get: function() {
+        return globalData.$data.$dark
+      },
+      set: function(nw) {
+        globalData.$data.$dark = nw
+      },
+    },
     $pan: {
       get: function() {
         return globalData.$data.$pan
@@ -72,6 +82,7 @@ Vue.mixin({
 
 let globalData = new Vue({
   data: {
+    $dark: 0,
     $pan: 1,
     $servers: [
       {
