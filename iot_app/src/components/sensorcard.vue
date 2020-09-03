@@ -7,15 +7,15 @@
     <div v-show="!topic.status" class="form-row">
       <div class="col-md-4 mb-3">
         <label>Min.</label>
-        <input type="text" class="form-control" v-model="topicMin" />
+        <input type="text" class="form-control form-control-sm" v-model="topicMin" />
       </div>
       <div class="col-md-4 mb-3">
         <label>Max.</label>
-        <input type="text" class="form-control" v-model="topicMax" />
+        <input type="text" class="form-control form-control-sm" v-model="topicMax" />
       </div>
       <div class="col-md-4 mb-3">
         <label>Ratio</label>
-        <input type="text" class="form-control" v-model="topicRatio" />
+        <input type="text" class="form-control form-control-sm" v-model="topicRatio" />
       </div>
     </div>
     <hr />

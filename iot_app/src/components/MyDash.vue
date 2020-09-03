@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="h-100">
     <navbar />
-    <div class="container-fluid container-lg h-100">
-      <div class="row">
+    <div class="container-fluid container-lg kmode">
+      <div class="row h-100">
         <listeners />
         <addtags />
         <edittags />

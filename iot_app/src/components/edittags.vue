@@ -1,6 +1,6 @@
 <template>
   <!-- Edit/Remove Tags -->
-  <div class="col-4 topic-gouup">
+  <div class="col-4 topic-gouup scrolly">
     <div class="card mb-3" v-for="(v, k) in groups" :key="k">
       <div class="card-header" data-toggle="collapse" :data-target="'#topic-gouup-' + k">
         <fa-icons icon="share-alt" /> {{ groups[k].name }}

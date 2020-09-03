@@ -3,12 +3,12 @@ export const settings = {
   some: 'Settings',
 }
 export const groups = [
-  //{ slug: 'mysensor', name: 'MySensor' },
+  { slug: 'mysensor', name: 'MySensor' },
   //{ slug: 'pump', name: 'Pump' },
 ]
 
 export const topics = [
-  /* {
+  {
     uniq: 'mysensor-humidity-1-1',
     name: 'Humidity',
     slug: 'humidity',
@@ -20,7 +20,7 @@ export const topics = [
     ],
     status: 0,
     groupSlug: 'mysensor',
-  }, */
+  },
   /* {
     uniq: 'mysensor-temperature-1-2',
     name: 'Temperature',

@@ -1,10 +1,11 @@
 <template>
   <!-- Listeners -->
-  <div class="col-4 d-flex flex-column">
-    <div class="mb-2 text-right">
+  <div class="col-4 d-flex flex-column scrolly">
+    <div class="mb-2 d-flex justify-content-between">
       <button @click="clearData" type="button" class="btn btn-sm btn-secondary">
         <fa-icons icon="redo-alt" /> Clear All
       </button>
+      <span class="text-muted">broker.hivemq.com:8000</span>
     </div>
     <div class="flex-grow-1">
       <div
@@ -35,7 +36,7 @@ export default {
         ['info', 'primary'],
         ['danger', 'danger'],
       ],
-      datas: [],
+      datas: [{ name: 'mysensor/humidity', value: 15.7, type: 2 }],
     }
   },
   mqtt: {
