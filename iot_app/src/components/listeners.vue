@@ -5,16 +5,22 @@
       <button @click="clearData" type="button" class="btn btn-sm btn-secondary">
         <fa-icons icon="redo-alt" /> Clear All
       </button>
-      <span class="text-muted">broker.hivemq.com:8000</span>
+      <span
+        :class="[
+          'btn btn-sm disabled',
+          { 'btn-success': this.$mqttcon, 'btn-outline-secondary': !this.$mqttcon },
+        ]"
+        ><fa-icons icon="wifi" />
+      </span>
     </div>
     <div class="flex-grow-1">
       <div
-        v-for="(v, k) in datas10"
-        :key="k"
-        :class="'d-flex justify-content-between align-items-center alert alert-' + types[datas[k].type][0]"
+        v-for="sen in this.$sens"
+        :key="sen.name"
+        :class="'d-flex justify-content-between align-items-center alert alert-' + types[sen.type][0]"
       >
-        {{ datas[k].name }}
-        <span :class="'badge badge-' + types[datas[k].type][1]">{{ datas[k].value }}</span>
+        {{ sen.name }}
+        <span :class="'badge badge-' + types[sen.type][1]">{{ sen.value }}</span>
       </div>
     </div>
   </div>
@@ -39,22 +45,25 @@ export default {
       datas: [{ name: 'mysensor/humidity', value: 15.7, type: 2 }],
     }
   },
-  mqtt: {
-    /* '+'(data, topic) {
-      console.log(topic + ': ' + String.fromCharCode.apply(null, data))
-      this.addData(topic, String.fromCharCode.apply(null, data))
-    }, */
-    '+/+'(data, topic) {
-      //console.log(topic + ': ' + String.fromCharCode.apply(null, data))
-      this.addData(topic, String.fromCharCode.apply(null, data))
-    },
-  },
   methods: {
     clearData: function() {
-      this.datas = []
+      this.$sens = []
     },
     addData: function(_title, _value, _type = 0) {
-      this.datas.unshift({ name: _title, value: _value, type: _type })
+      console.log(this.$sens)
+      let newtopic = true
+      //let _ = this
+      this.$sens.map((sen) => {
+        if (sen.name == _title) {
+          console.log(_title, _value)
+          //_.$sens.splice(i, 0)
+          sen.value = _value
+          newtopic = false
+        }
+      })
+      if (newtopic) {
+        this.$sens.unshift({ name: _title, value: _value, type: _type })
+      }
       //this.pubTopic(_title, _value)
     },
     pubTopic: function(_topic, _value) {
@@ -77,21 +86,6 @@ export default {
       }
       return [rnd, type]
     },
-    update: function() {
-      /* this.datas = []
-      this.topics.map((topic) => {
-        if (topic.status) {
-          let arr = topic.opt.map((topicOpt) => topicOpt.value)
-          let val = this.rndMinMax(...arr)
-          let title = `${topic.groupSlug}/${topic.slug}`
-          //console.log(arr, vall)
-          //val.unshift(title)
-          //this.addData(...[title, ...val])
-          console.log(title, val)
-          //this.pubTopic(title, val[0])
-        }
-      }) */
-    },
   },
   computed: {
     mtopics: function() {
@@ -103,21 +97,24 @@ export default {
       }
     },
     datas10: function() {
-      return this.datas.slice(0, 10)
+      return this.$sens.slice(0, 10)
     },
   },
-  created: function() {
-    /* let _ = this
-    this.timer = setInterval(function() {
-      _.update()
-    }, this.rtime) */
-  },
-  /* watch: {
-    '$parent.topics'(nv) {
-      debugger // eslint-disable-line
-      console.log(nv)
+
+  watch: {
+    '$parent.$mqttcon'(nv) {
+      //debugger // eslint-disable-line
+      let _ = this
+      if (nv) {
+        this.$mqtt.on('message', function(topic, message) {
+          //console.log(topic, message.toString())
+          if (topic.includes('/')) {
+            _.addData(topic, message.toString())
+          }
+        })
+      }
     },
-  }, */
+  },
 }
 </script>
 

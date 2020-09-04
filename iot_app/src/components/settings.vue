@@ -22,11 +22,13 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Theme</label>
-              <select class="form-control" v-model="this.$dark">
-                <option value="0" selected>Default</option>
-                <option value="1" disabled>Dark</option>
-              </select>
+              <label>Dark Mode</label>
+              <div>
+                <label class="switch">
+                  <input type="checkbox" :checked="this.$dark" @change="toggleDark()" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
             </div>
           </form>
         </div>
@@ -53,8 +55,12 @@
         <div class="tab-pane fade show active" id="v-pills-messages">
           <h4>Server Settings</h4>
           <form ref="serverFrm" @submit.prevent="saveServer">
-            <div class="form-group">
-              <label>MQTT Servers</label>
+            <div class="form-group ">
+              <label
+                >MQTT Servers
+                <span v-show="showDisconnect" class="badge badge-success">Connected..</span></label
+              >
+
               <select class="form-control" v-model="selServer">
                 <option value="0">Create Your Server</option>
                 <option value="1">Add Other Server</option>
@@ -99,17 +105,16 @@
                 <input type="password" class="form-control" v-model="serverPass" :disabled="serverEditable" />
               </div>
             </div>
-            <div class="form-group form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                v-model="serverSel"
-                :disabled="serverSelected"
-              />
-              <label class="form-check-label">Selected</label>
-            </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" v-show="!serverEditable" class="btn btn-primary mr-2">
+                Save
+              </button>
+              <button type="button" v-show="showConnect" @click="connServer()" class="btn btn-success mr-2">
+                Connect
+              </button>
+              <button type="button" v-show="showDisconnect" @click="disconnServer()" class="btn btn-danger">
+                Disconnect
+              </button>
             </div>
           </form>
         </div>
@@ -145,6 +150,8 @@
 </template>
 
 <script>
+import mqtt from 'mqtt'
+
 export default {
   data() {
     return {
@@ -154,13 +161,17 @@ export default {
       serverPath: '',
       serverUser: '',
       serverPass: '',
-      serverSel: 0,
+      //serverSel: 0,
       serverEditable: false,
       serverSelected: false,
+      serverConnected: null,
     }
   },
   mqtt: {},
   methods: {
+    toggleDark: function() {
+      this.$dark = Number(!this.$dark)
+    },
     saveServer: function() {
       switch (this.selServer) {
         case 0: {
@@ -168,10 +179,10 @@ export default {
           break
         }
         case '1': {
-        //add
-        
+          //add
+
           let _uniq = this.$options.filters.toSafe(this.serverHost + '-' + this.serverPort)
-          console.log(_uniq)
+          //console.log(_uniq)
           this.$servers.push({
             uniq: _uniq,
             host: this.serverHost,
@@ -183,41 +194,28 @@ export default {
             selected: this.serverSel,
           })
 
-          if (this.serverSel) {
-            this.$servers.map((ss) => {
-              if (ss.uniq !== _uniq) {
-                ss.selected = 0
-              }
-            })
-          }
           this.selServer = _uniq
           break
-          }
+        }
         default: {
           //select
-            let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
-            _server.host= this.serverHost
-            _server.port= this.serverPort
-            _server.path= this.serverPath
-            _server.user= this.serverUser
-            _server.pass= this.serverPass
-          if (this.serverSel) {
-            if (!_server.selected) {
-              this.$servers.map((ss) => {
-                ss.selected = 0
-              })
-              _server.selected = 1
-              this.serverSelected = true
-            }
+          let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
+          _server.host = this.serverHost
+          _server.port = this.serverPort
+          _server.path = this.serverPath
+          _server.user = this.serverUser
+          _server.pass = this.serverPass
+
+          if (_server.uniq == this.$mqttuniq) {
+            this.$mqtt.end()
           }
-          }
+        }
       }
-      //if (this.serverSel) {}
     },
     chgServer: function() {
       this.serverEditable = this.serverSelected = false
       this.serverHost = this.serverPort = this.serverPath = this.serverUser = this.serverPass = ''
-      this.serverSel = 0
+      //this.serverSel = 0
 
       let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
       if (_server) {
@@ -226,13 +224,60 @@ export default {
         this.serverPath = _server.path
         this.serverUser = _server.user
         this.serverPass = _server.pass
-        this.serverSel = _server.selected
+        //this.serverSel = _server.selected
         this.serverEditable = Boolean(!_server.editable)
-        this.serverSel = this.serverSelected = Boolean(_server.selected)
+        //this.serverSel = this.serverSelected = Boolean(_server.selected)
+        this.serverSelected = Boolean(_server.selected)
+      }
+    },
+    disconnServer: function() {
+      this.$mqtt.end()
+    },
+    connServer: function() {
+      let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
+      let _ = this
+
+      if (_.$mqttcon) {
+        _.$mqtt.end()
+      }
+
+      if (_server) {
+        let _cli = mqtt.connect({
+          host: _server.host,
+          port: _server.port,
+          path: _server.path,
+          username: _server.user,
+          password: _server.pass,
+          reconnectPeriod: 0,
+          connectTimeout: 1000,
+        })
+        _cli.on('connect', () => {
+          console.log('connected..')
+          _.$mqtt = _cli
+          _.$mqttcon = 1
+          _.$mqttuniq = _server.uniq
+        })
+        _cli.on('close', () => {
+          console.log('disconnected..')
+          _.$mqtt = null
+          _.$mqttcon = 0
+          _.$mqttuniq = ''
+        })
       }
     },
   },
-  computed: {},
+  computed: {
+    showConnect: function() {
+      let _server = this.$servers.find((srv) => srv.uniq == this.selServer)
+      return this.$mqttuniq !== this.selServer && _server
+    },
+    showDisconnect: function() {
+      return this.$mqttuniq == this.selServer && this.$mqttcon == 1
+    },
+    connStatus: function() {
+      return this.serverConnected
+    },
+  },
   created: function() {
     this.selServer = this.$servers.map((srv) => (srv.selected ? srv.uniq : false))[0]
   },

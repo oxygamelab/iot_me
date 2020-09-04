@@ -113,7 +113,7 @@ export default {
         groupSlug: _groupSlug,
       }
 
-      console.log(newTopic)
+      //console.log(newTopic)
       this.topics.push(newTopic)
 
       //** subscribe topic */

@@ -22,7 +22,12 @@
     <div class="d-flex justify-content-between">
       <a
         @click="toggleStatus(topic.uniq)"
-        :class="'btn btn-sm flex-fill mr-2 btn-' + types[topic.status].style"
+        :class="
+          'btn btn-sm flex-fill mr-2 btn-' +
+            types[topic.status].style +
+            ' ' +
+            (this.$mqttcon ? '' : 'disabled')
+        "
         ><fa-icons :icon="types[topic.status].icon" /> {{ types[topic.status].text }}</a
       >
       <a @click="removeTopic" :class="`btn btn-sm px-3 btn-${types[2].style}`"
@@ -150,37 +155,48 @@ export default {
       }
       return [rnd, type] */
     },
+    makesubs: function() {
+      var _ = this
+      this.$mqtt.subscribe(this.topic.groupSlug, {}, (err) => {
+        if (!err) {
+          //console.log(granted);
+          console.log(`Subscribe | topic: ${_.topic.groupSlug}`)
+        } else {
+          console.log(`Err: ${err}`)
+        }
+      })
+      this.subTopic(this.topic, (err, topic) => {
+        if (!err) {
+          //console.log(granted);
+          console.log(`Subscribe | topic: ${topic}`)
+          //console.log(`Unsubscribe | topic: ${_topic}`)
+        } else {
+          console.log(`Err: ${err}`)
+        }
+      })
+    },
   },
   computed: {
     topicOpt: function() {
       return this.topic.opt.map((obj) => obj.name + ': ' + obj.value.toFixed(2)).join('<br>')
     },
+    mymqtt: function() {
+      return this.$mqttcon
+    },
   },
   created() {
-    var _ = this
-    this.$mqtt.subscribe(this.topic.groupSlug, {}, (err) => {
-      if (!err) {
-        //console.log(granted);
-        console.log(`Subscribe | topic: ${_.topic.groupSlug}`)
-      } else {
-        console.log(`Err: ${err}`)
-      }
-    })
-    this.subTopic(this.topic, (err, topic) => {
-      if (!err) {
-        //console.log(granted);
-        console.log(`Subscribe | topic: ${topic}`)
-        //console.log(`Unsubscribe | topic: ${_topic}`)
-      } else {
-        console.log(`Err: ${err}`)
-      }
-    })
-
     let topicOpts = this.topic.opt.map((topt) => topt.value)
 
     this.topicMin = topicOpts[0]
     this.topicMax = topicOpts[1]
     this.topicRatio = topicOpts[2]
+  },
+  watch: {
+    mymqtt: function(nw) {
+      if (nw) {
+        this.makesubs()
+      }
+    },
   },
 }
 </script>

@@ -71,7 +71,7 @@ export default {
     },
     pubTopic: function(_topic, _value) {
       let topic = `${_topic}`
-      console.log(topic, _value)
+      //console.log(topic, _value)
       this.$mqtt.publish(topic, _value)
     },
     unsubTopic: function(_topic, _call) {
@@ -115,8 +115,4 @@ export default {
 }
 </script>
 
-<style>
-.card-body > .card:first-child {
-  margin-top: 0 !important;
-}
-</style>
+<style></style>

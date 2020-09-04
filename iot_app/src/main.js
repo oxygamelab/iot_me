@@ -3,19 +3,17 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-import VueMqtt from 'vue-mqtt'
-Vue.use(VueMqtt, 'ws://broker.hivemq.com:8000', {
+/* import VueMqtt from 'vue-mqtt'
+Vue.use(VueMqtt, 'ws://', {
   clientId: 'service-' + parseInt(Math.random() * 100000),
   connectTimeout: 5000,
   hostname: 'broker.hivemq.com',
   port: 8000,
   path: '/mqtt',
-})
-let aa = false
-console.log(this.$dark)
+}) */
+
 import 'bootstrap'
-import('bootstrap/dist/css/bootstrap.min.css')
-if(aa) { import('./assets/bootstrap.min.css') }
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -42,7 +40,6 @@ Vue.component('autocomplete', autocomplete)
 
 import { groups, topics } from './globals'
 
-Vue.prototype.$panno = 0
 //Vue.prototype.$topics = topics
 
 Vue.mixin({
@@ -53,12 +50,50 @@ Vue.mixin({
     }
   },
   computed: {
+    $sens: {
+      get: function() {
+        return globalData.$data.$sens
+      },
+      set: function(nw) {
+        globalData.$data.$sens = nw
+      },
+    },
+    $mqttuniq: {
+      get: function() {
+        return globalData.$data.$mqttuniq
+      },
+      set: function(nw) {
+        globalData.$data.$mqttuniq = nw
+      },
+    },
+    $mqttcon: {
+      get: function() {
+        return globalData.$data.$mqttcon
+      },
+      set: function(nw) {
+        globalData.$data.$mqttcon = nw
+      },
+    },
+    $mqtt: {
+      get: function() {
+        return globalData.$data.$mqtt
+      },
+      set: function(nw) {
+        globalData.$data.$mqtt = nw
+      },
+    },
     $dark: {
       get: function() {
         return globalData.$data.$dark
       },
       set: function(nw) {
         globalData.$data.$dark = nw
+        const el = document.body
+        if (this.$dark) {
+          el.classList.add('vdark')
+        } else {
+          el.classList.remove('vdark')
+        }
       },
     },
     $pan: {
@@ -82,8 +117,12 @@ Vue.mixin({
 
 let globalData = new Vue({
   data: {
+    $sens: [{ name: 'mysensor/humidity', value: 15.7, type: 2 }],
+    $mqttuniq: '',
+    $mqttcon: 0,
+    $mqtt: null,
     $dark: 0,
-    $pan: 1,
+    $pan: 0,
     $servers: [
       {
         uniq: 'broker-hivemq-com-8000',
