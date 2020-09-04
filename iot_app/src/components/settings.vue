@@ -280,6 +280,7 @@ export default {
   },
   created: function() {
     this.selServer = this.$servers.map((srv) => (srv.selected ? srv.uniq : false))[0]
+    //this.connServer()
   },
   watch: {
     selServer: function() {

@@ -19,3 +19,10 @@ npm install vue-mqtt --save
 - mqtt server | test.mosquitto.org
 - gateway_sim | mqtt client | nodejs
 - iot_app | mqtt client | vuejs
+
+- dark mode
+- multi lang
+
+- connect mqtt server
+- create mqtt server
+- account login & sync

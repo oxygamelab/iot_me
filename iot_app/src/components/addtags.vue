@@ -1,6 +1,6 @@
 <template>
   <!-- Add Tags/Groups -->
-  <div class="col-4">
+  <div class="col-4 scrolly">
     <form ref="topicFrm" @submit.prevent="getForm">
       <div class="form-group">
         <label>Topic Group</label>
