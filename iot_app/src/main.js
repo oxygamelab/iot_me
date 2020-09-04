@@ -117,7 +117,7 @@ Vue.mixin({
 
 let globalData = new Vue({
   data: {
-    $sens: [{ name: 'mysensor/humidity', value: 15.7, type: 2 }],
+    $sens: [],
     $mqttuniq: '',
     $mqttcon: 0,
     $mqtt: null,

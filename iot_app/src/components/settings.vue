@@ -3,15 +3,15 @@
   <div class="row h-100">
     <div class="col-3 scrolly">
       <div class="nav flex-column nav-pills">
-        <a class="nav-link" data-toggle="pill" href="#v-pills-home">General</a>
+        <a class="nav-link active" data-toggle="pill" href="#v-pills-home">General</a>
         <a class="nav-link" data-toggle="pill" href="#v-pills-profile">Account</a>
-        <a class="nav-link active" data-toggle="pill" href="#v-pills-messages">Server</a>
+        <a class="nav-link" data-toggle="pill" href="#v-pills-messages">Server</a>
         <a class="nav-link" data-toggle="pill" href="#v-pills-settings">Info</a>
       </div>
     </div>
     <div class="col-9 scrolly">
       <div class="tab-content" id="v-pills-tabContent">
-        <div class="tab-pane fade" id="v-pills-home">
+        <div class="tab-pane fade show active" id="v-pills-home">
           <h4>General Settings</h4>
           <form>
             <div class="form-group">
@@ -52,7 +52,7 @@
             </div>
           </form>
         </div>
-        <div class="tab-pane fade show active" id="v-pills-messages">
+        <div class="tab-pane fade" id="v-pills-messages">
           <h4>Server Settings</h4>
           <form ref="serverFrm" @submit.prevent="saveServer">
             <div class="form-group ">
