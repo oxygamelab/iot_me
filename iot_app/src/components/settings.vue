@@ -55,14 +55,13 @@
         <div class="tab-pane fade" id="v-pills-messages">
           <h4>Server Settings</h4>
           <form ref="serverFrm" @submit.prevent="saveServer">
-            <div class="form-group ">
-              <label
-                >MQTT Servers
-                <span v-show="showDisconnect" class="badge badge-success">Connected..</span></label
-              >
+            <div class="form-group">
+              <label>
+                MQTT Servers
+                <span v-show="showDisconnect" class="badge badge-success">Connected..</span>
+              </label>
 
               <select class="form-control" v-model="selServer">
-                <option value="0">Create Your Server</option>
                 <option value="1">Add Other Server</option>
                 <option :value="serv.uniq" v-for="serv in this.$servers" :key="serv.uniq"
                   >{{ serv.host }}:{{ serv.port }}</option
@@ -106,9 +105,7 @@
               </div>
             </div>
             <div class="form-group">
-              <button type="submit" v-show="!serverEditable" class="btn btn-primary mr-2">
-                Save
-              </button>
+              <button type="submit" v-show="!serverEditable" class="btn btn-primary mr-2">Save</button>
               <button type="button" v-show="showConnect" @click="connServer()" class="btn btn-success mr-2">
                 Connect
               </button>
@@ -174,7 +171,7 @@ export default {
     },
     saveServer: function() {
       switch (this.selServer) {
-        case 0: {
+        case '0': {
           //create
           break
         }

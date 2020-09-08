@@ -135,9 +135,9 @@ let globalData = new Vue({
         selected: 1,
       },
       {
-        uniq: 'test-mosquitto-com-8080',
-        host: 'test.mosquitto.com',
-        port: '8080',
+        uniq: 'mqtt-eclipse-org-80',
+        host: 'mqtt-eclipse-org',
+        port: '80',
         path: '/mqtt',
         user: '',
         pass: '',
